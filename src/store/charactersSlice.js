@@ -1,9 +1,20 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   data: [],
-  loading: true,
+  loading: false,
 };
+
+const ENDPOINT = 'https://swapi.dev/api/people/';
+
+export const fetchCharactersFromApi = createAsyncThunk(
+  'characters/fetchCharacters',
+  async (searchTerm) => {
+    const response = await fetch(ENDPOINT + searchTerm);
+    const data = await response.json();
+    return data.results;
+  },
+);
 
 export const charactersSlice = createSlice({
   name: 'characters',
@@ -11,6 +22,15 @@ export const charactersSlice = createSlice({
   reducers: {
     add: (state, action) => {
       state.characters = action.payload;
+    },
+  },
+  extraReducers: {
+    [fetchCharactersFromApi.fulfilled]: (state, action) => {
+      state.data = action.payload;
+      state.loading = false;
+    },
+    [fetchCharactersFromApi.pending]: (state, action) => {
+      state.loading = true;
     },
   },
 });

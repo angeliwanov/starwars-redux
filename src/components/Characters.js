@@ -10,7 +10,7 @@ export const Characters = () => {
     <section className="Characters">
       {loading && <Loading />}
       {characters.map((character) => (
-        <Character key={character.id} character={character} />
+        <Character key={character.name} character={character} />
       ))}
     </section>
   );
